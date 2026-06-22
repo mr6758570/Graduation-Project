@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المخازن - لوحة التحكم</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-warehouse"></i>
+            <h2>المخازن</h2>
+        </div>
+        <ul>
+            <a href="index.html">
+                <li class="active">
+                    <i class="fa-solid fa-chart-line"></i>
+                    لوحة التحكم
+                </li>
+            </a>
+            <a href="products.html">
+                <li>
+                    <i class="fa-solid fa-box"></i>
+                    المنتجات
+                </li>
+            </a>
+            <a href="imports.html">
+                <li>
+                    <i class="fa-solid fa-arrow-down"></i>
+                    الوارد
+                </li>
+            </a>
+            <a href="exports.html">
+                <li>
+                    <i class="fa-solid fa-arrow-up"></i>
+                    الصادر
+                </li>
+            </a>
+            <a href="reports.html">
+                <li>
+                    <i class="fa-solid fa-file"></i>
+                    التقارير
+                </li>
+            </a>
+            <a href="customers.html">
+                <li>
+                    <i class="fa-solid fa-address-book"></i>
+                    العملاء والموردين
+                </li>
+            </a>
+        </ul>
+    </aside>
+
+    <main class="main">
+
+        <header class="navbar">
+            <div class="title">لوحة التحكم</div>
+            <div class="user">
+                <i class="fa-solid fa-user"></i>
+                <span>Admin</span>
+            </div>
+        </header>
+
+        <section class="cards">
+            <div class="card">
+                <h3>إجمالي المنتجات</h3>
+                <h2>0</h2>
+            </div>
+            <div class="card">
+                <h3>الوارد</h3>
+                <h2>0</h2>
+            </div>
+            <div class="card">
+                <h3>الصادر</h3>
+                <h2>0</h2>
+            </div>
+            <div class="card">
+                <h3>صافي المخزون</h3>
+                <h2>0</h2>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="section-header">إضافة حركة مخزون</div>
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="productInput">
+                </div>
+                <div class="input-group">
+                    <label>الكود</label>
+                    <input type="text" id="codeInput">
+                </div>
+                <div class="input-group">
+                    <label>الوحدة</label>
+                    <select id="unitSelect">
+                        <option>قطعة</option>
+                        <option>شكارة</option>
+                        <option>كيلو</option>
+                        <option>طن</option>
+                        <option>كرتونة</option>
+                        <option>متر</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>التاريخ</label>
+                    <input type="date" id="dateInput">
+                </div>
+                <div class="input-group" style="grid-column: span 4; margin-top: 5px;">
+                    <label>رابط صورة المنتج (اختياري)</label>
+                    <input type="url" id="productImgUrlInput" placeholder="https://example.com/image.jpg">
+                </div>
+            </div>
+        </section>
+
+        <section class="stock-container">
+            <div class="stock-box">
+                <h3>الوارد</h3>
+                <div class="input-group" style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 13px; color: #64748b; font-weight: 600;">المورد المسؤول</label>
+                    <select id="supplierSelect" style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; font-size: 14px; color: #334155; outline: none; background: #fff;"></select>
+                </div>
+                <input type="number" placeholder="السعر">
+                <input type="number" placeholder="الكمية">
+                <input type="number" placeholder="الإجمالي" readonly>
+            </div>
+
+            <div class="stock-box">
+                <h3>الصادر</h3>
+                <div class="input-group" style="margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-size: 13px; color: #64748b; font-weight: 600;">العميل المستلم</label>
+                    <select id="customerSelect" style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: inherit; font-size: 14px; color: #334155; outline: none; background: #fff;"></select>
+                </div>
+                <input type="number" placeholder="السعر">
+                <input type="number" placeholder="الكمية">
+                <input type="number" placeholder="الإجمالي" readonly>
+            </div>
+        </section>
+
+        <section class="buttons">
+            <button class="add-btn">إضافة</button>
+            <button class="edit-btn">تعديل</button>
+            <button class="delete-btn">حذف</button>
+            <button class="search-btn">بحث</button>
+        </section>
+
+        <section class="charts">
+            <div class="chart-box">
+                <canvas id="incomeChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <canvas id="outcomeChart"></canvas>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>صورة المنتج</th>
+                        <th>المنتج</th>
+                        <th>الكود</th>
+                        <th>الوحدة</th>
+                        <th>الوارد</th>
+                        <th>الصادر</th>
+                        <th>التاريخ</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

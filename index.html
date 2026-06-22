@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body{
+            margin:0;
+            font-family:Arial;
+            background: linear-gradient(135deg,#111827,#1f2937,#111827);
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .login-box{
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            padding:40px;
+            border-radius:20px;
+            width:350px;
+            color:#fff;
+            box-shadow:0 0 30px rgba(0,0,0,0.4);
+            text-align:center;
+        }
+
+        .logo i{
+            font-size:40px;
+            color:#22c55e;
+            margin-bottom:10px;
+        }
+
+        h2{
+            margin:10px 0;
+        }
+
+        .input-group{
+            display:flex;
+            align-items:center;
+            background:rgba(255,255,255,0.1);
+            margin-bottom:15px;
+            padding:10px;
+            border-radius:10px;
+        }
+
+        .input-group i{
+            margin-left:10px;
+            color:#22c55e;
+        }
+
+        input{
+            border:none;
+            outline:none;
+            background:transparent;
+            color:#fff;
+            width:100%;
+        }
+
+        button{
+            width:100%;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            background:#22c55e;
+            color:#fff;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#16a34a;
+        }
+
+        #error{
+            color:#ff4d4d;
+            margin-top:10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        <i class="fa-solid fa-warehouse"></i>
+        <h2>نظام المخازن</h2>
+    </div>
+
+    <h3>تسجيل الدخول</h3>
+
+    <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" id="username" placeholder="اسم المستخدم">
+    </div>
+
+    <div class="input-group">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="password" placeholder="كلمة المرور">
+    </div>
+
+    <button onclick="login()">دخول</button>
+
+    <p id="error"></p>
+
+</div>
+
+<script>
+function login(){
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const error = document.getElementById("error");
+
+    const adminUser = "OHI";
+    const adminPass = "OHI";
+
+    if(username === "" || password === ""){
+        error.textContent = "من فضلك املأ البيانات";
+        return;
+    }
+
+    if(username === adminUser && password === adminPass){
+
+        localStorage.setItem("loggedIn", "true");
+
+        window.location.href = "home.html";
+
+    } else {
+        error.textContent = "اسم المستخدم أو كلمة المرور خطأ";
+    }
+}
+</script>
+
+</body>
+</html>
