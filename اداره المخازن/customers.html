@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة العملاء والموردين - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* أنميشن الدخول والظهور التدريجي */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* فلاتر التصفية والتبويبات */
+        .filter-wrapper {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+            margin-bottom: 25px;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+
+        /* شبكة الإدخال للنموذج */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto;
+            gap: 15px;
+            align-items: flex-end;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-control {
+            padding: 10px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #334155;
+            font-family: inherit;
+            outline: none;
+            background: #ffffff;
+        }
+
+        .form-control:focus {
+            border-color: #3b82f6;
+        }
+
+        .btn-add {
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            padding: 11px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+
+        /* تنسيقات الجدول */
+        .table-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+        }
+
+        .table-section table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            width: 100%;
+        }
+
+        .table-section th {
+            background: #f8fafc !important;
+            color: #64748b !important;
+            font-weight: 600 !important;
+            font-size: 14px;
+            padding: 16px;
+            border: none !important;
+        }
+
+        .table-section tbody tr {
+            background: #ffffff;
+            transition: all 0.25s ease;
+        }
+
+        .table-section tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .table-section td {
+            padding: 16px !important;
+            border-top: 1px solid #f1f5f9 !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            color: #334155;
+            font-size: 15px;
+        }
+
+        .table-section td:first-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-right: 1px solid #f1f5f9 !important;
+        }
+        
+        .table-section td:last-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            border-left: 1px solid #f1f5f9 !important;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .badge-client {
+            background: #eff6ff; color: #3b82f6;
+            padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;
+        }
+        .badge-supplier {
+            background: #ecfdf5; color: #10b981;
+            padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-warehouse"></i>
+            <h2>المخازن</h2>
+        </div>
+        <ul>
+            <a href="home.html" style="text-decoration: none; color: inherit;">
+                <li><i class="fa-solid fa-chart-line"></i> لوحة التحكم</li>
+            </a>
+            <a href="products.html" style="text-decoration: none; color: inherit;">
+                <li><i class="fa-solid fa-box"></i> المنتجات</li>
+            </a>
+            <a href="imports.html" style="text-decoration: none; color: inherit;">
+                <li><i class="fa-solid fa-arrow-down"></i> الوارد</li>
+            </a>
+            <a href="exports.html" style="text-decoration: none; color: inherit;">
+                <li><i class="fa-solid fa-arrow-up"></i> الصادر</li>
+            </a>
+            <a href="reports.html" style="text-decoration: none; color: inherit;">
+                <li><i class="fa-solid fa-file"></i> التقارير</li>
+            </a>
+            <a href="customers.html" style="text-decoration: none; color: inherit;">
+                <li class="active"><i class="fa-solid fa-address-book"></i> العملاء والموردين</li>
+            </a>
+        </ul>
+    </aside>
+
+    <main class="main">
+        <header class="navbar">
+            <div class="title" id="pageTitle">إدارة جهات التعامل - قائمة العملاء</div>
+            <div class="user">
+                <i class="fa-solid fa-user"></i>
+                <span>Admin</span>
+            </div>
+        </header>
+
+        <section class="filter-wrapper">
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab('customer', this)">قائمة العملاء (الصادر)</button>
+                <button class="tab-btn" onclick="switchTab('supplier', this)">قائمة الموردين (الوارد)</button>
+            </div>
+            
+            <div class="input-grid">
+                <div class="form-group">
+                    <label id="labelName">اسم العميل بالكامل</label>
+                    <input type="text" id="contactName" class="form-control" placeholder=" من فضلك ادخل الاسم">
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف / الجوال</label>
+                    <input type="text" id="contactPhone" class="form-control" placeholder="من فضلك ادخل رقم الهاتف ">
+                </div>
+                <div class="form-group">
+                    <label>الشركة / الملاحظات</label>
+                    <input type="text" id="contactCompany" class="form-control" placeholder="اختياري...">
+                </div>
+                <button class="btn-add" onclick="saveContact()">
+                    <i class="fa-solid fa-plus"></i> إضافة للدفتر
+                </button>
+            </div>
+        </section>
+
+        <section class="table-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>رقم الهاتف</th>
+                        <th>الشركة / الملاحظات</th>
+                        <th>الجهة</th>
+                        <th style="width: 100px;">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTableBody">
+                    </tbody>
+            </table>
+        </section>
+    </main>
+
+</div>
+
+<script>
+    let currentTab = 'customer';
+
+    function switchTab(type, element) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+        currentTab = type;
+        
+        const pageTitle = document.getElementById("pageTitle");
+        const labelName = document.getElementById("labelName");
+        const contactNameInput = document.getElementById("contactName");
+
+        if(type === 'customer') {
+            pageTitle.textContent = "إدارة جهات التعامل - قائمة العملاء";
+            labelName.textContent = "اسم العميل بالكامل";
+            contactNameInput.placeholder = "مثال: مروان أحمد";
+        } else {
+            pageTitle.textContent = "إدارة جهات التعامل - قائمة الموردين";
+            labelName.textContent = "اسم المورد / الشركة";
+            contactNameInput.placeholder = "مثال: شركة الهدى للتوريدات";
+        }
+
+        renderContacts();
+    }
+
+    function saveContact() {
+        const name = document.getElementById("contactName").value.trim();
+        const phone = document.getElementById("contactPhone").value.trim();
+        const company = document.getElementById("contactCompany").value.trim() || "---";
+
+        if (!name) {
+            alert("⚠️ يرجى إدخال الاسم أولاً!");
+            return;
+        }
+
+        let contacts = JSON.parse(localStorage.getItem("appContacts")) || [];
+
+        const isExist = contacts.some(c => c.name.toLowerCase() === name.toLowerCase() && c.type === currentTab);
+        if (isExist) {
+            alert("⚠️ هذا الاسم مسجل بالفعل في هذه القائمة!");
+            return;
+        }
+
+        contacts.push({ name, phone: phone || "---", company, type: currentTab });
+        localStorage.setItem("appContacts", JSON.stringify(contacts));
+
+        document.getElementById("contactName").value = "";
+        document.getElementById("contactPhone").value = "";
+        document.getElementById("contactCompany").value = "";
+
+        renderContacts();
+    }
+
+    function deleteContact(name, type) {
+        if(confirm("🗑️ هل أنت متأكد من حذف هذه الجهة من الدفتر؟")) {
+            let contacts = JSON.parse(localStorage.getItem("appContacts")) || [];
+            contacts = contacts.filter(c => !(c.name === name && c.type === type));
+            localStorage.setItem("appContacts", JSON.stringify(contacts));
+            renderContacts();
+        }
+    }
+
+    function renderContacts() {
+        const tableBody = document.getElementById("contactsTableBody");
+        let contacts = JSON.parse(localStorage.getItem("appContacts")) || [];
+        
+        tableBody.innerHTML = "";
+        const filtered = contacts.filter(c => c.type === currentTab);
+
+        if(filtered.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8;">لا توجد بيانات مسجلة في هذه القائمة حالياً.</td></tr>`;
+            return;
+        }
+
+        filtered.forEach(c => {
+            const tr = document.createElement("tr");
+            const badge = c.type === 'customer' ? '<span class="badge-client">عميل</span>' : '<span class="badge-supplier">مورد</span>';
+            
+            tr.innerHTML = `
+                <td style="font-weight: 700; color: #1e293b;">${c.name}</td>
+                <td style="font-family: monospace; font-weight: 600;">${c.phone}</td>
+                <td style="color: #64748b;">${c.company}</td>
+                <td>${badge}</td>
+                <td>
+                    <button class="btn-delete" onclick="deleteContact('${c.name}', '${c.type}')">حذف</button>
+                </td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', renderContacts);
+</script>
+
+<script src="app.js"></script>
+</body>
+</html>

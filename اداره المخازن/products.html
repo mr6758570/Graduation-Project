@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنتجات - نظام إدارة المخازن</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .product-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .prod-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+            border-right: 6px solid #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .prod-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.08);
+        }
+
+        .prod-card i {
+            font-size: 32px;
+            color: #3b82f6;
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .prod-card:hover i {
+            transform: scale(1.1) rotate(-10deg);
+        }
+
+        .prod-card h4 {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .prod-card h2 {
+            color: #0f172a;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-control label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .form-control input, .form-control select {
+            padding: 12px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-family: inherit;
+            outline: none;
+            font-size: 14px;
+            color: #334155;
+            background: #ffffff;
+            transition: all 0.25s ease;
+        }
+
+        .form-control input:focus, .form-control select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-submit {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 45px;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 18px;
+            margin-bottom: 20px;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .search-container i {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .search-container input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+            color: #334155;
+            font-family: inherit;
+        }
+
+        .table-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+        }
+
+        .table-section table {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            width: 100%;
+        }
+
+        .table-section th {
+            background: #f8fafc !important;
+            color: #64748b !important;
+            font-weight: 600 !important;
+            text-transform: uppercase;
+            font-size: 14px;
+            padding: 16px;
+            border: none !important;
+        }
+
+        .table-section tbody tr {
+            background: #ffffff;
+            transition: all 0.25s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            opacity: 0;
+        }
+
+        .table-section tbody tr:hover {
+            background: #fafafa;
+            transform: scale(1.01);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+        }
+
+        .table-section td {
+            padding: 16px !important;
+            border-top: 1px solid #f1f5f9 !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            color: #334155;
+            font-size: 15px;
+        }
+
+        .table-section td:first-child {
+            border-left: none;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-right: 1px solid #f1f5f9 !important;
+        }
+        
+        .table-section td:last-child {
+            border-right: none;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            border-left: 1px solid #f1f5f9 !important;
+        }
+
+        .badge-unit {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge-available {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: #1d4ed8;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .badge-empty {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+            color: #dc2626;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+        }
+
+        .code-box {
+            font-family: 'Courier New', Courier, monospace;
+            background: #f8fafc;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-warehouse"></i>
+            <h2>المخازن</h2>
+        </div>
+        <ul>
+            <a href="home.html">
+                <li><i class="fa-solid fa-chart-line"></i> لوحة التحكم</li>
+            </a>
+            <a href="products.html">
+                <li class="active"><i class="fa-solid fa-box"></i> المنتجات</li>
+            </a>
+            <a href="imports.html">
+                <li><i class="fa-solid fa-arrow-down"></i> الوارد</li>
+            </a>
+            <a href="exports.html">
+                <li><i class="fa-solid fa-arrow-up"></i> الصادر</li>
+            </a>
+            <a href="reports.html">
+                <li><i class="fa-solid fa-file"></i> التقارير</li>
+            </a>
+            <a href="customers.html">
+                <li>
+                    <i class="fa-solid fa-address-book"></i>
+                    العملاء والموردين
+                </li>
+            </a>
+        </ul>
+    </aside>
+
+    <main class="main">
+        <header class="navbar">
+            <div class="title">إدارة المنتجات</div>
+            <div class="user">
+                <i class="fa-solid fa-user"></i>
+                <span>Admin</span>
+            </div>
+        </header>
+
+        <section class="product-summary-cards">
+            <div class="prod-card">
+                <div>
+                    <h4>إجمالي عدد الأصناف</h4>
+                    <h2 id="prodUniqueCount">0</h2>
+                </div>
+                <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div class="prod-card">
+                <div>
+                    <h4>إجمالي المخزون المتاح</h4>
+                    <h2 id="prodTotalStock">0</h2>
+                </div>
+                <i class="fa-solid fa-cubes"></i>
+            </div>
+            <div class="prod-card">
+                <div>
+                    <h4>عدد الوحدات النشطة</h4>
+                    <h2 id="prodUnitsCount">0</h2>
+                </div>
+                <i class="fa-solid fa-calculator"></i>
+            </div>
+        </section>
+
+        <section class="table-section" style="margin-bottom: 30px;">
+            <h3 style="margin-bottom: 20px; color: #0f172a; font-weight: 700;">
+                <i class="fa-solid fa-plus-circle" style="color: #3b82f6; margin-left: 8px;"></i>إضافة صنف جديد للدليل
+            </h3>
+            <form id="addProductForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap: 20px; align-items: end;">
+                
+                <div class="form-control">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="newProdName" required placeholder="من فضلك ادخل اسم المنتج">
+                </div>
+
+                <div class="form-control">
+                    <label>كود المنتج</label>
+                    <input type="text" id="newProdCode" required placeholder="من فضلك ادخل الكود" style="font-family: 'Courier New'; font-weight: 600;">
+                </div>
+
+                <div class="form-control">
+                    <label>الوحدة القياسية</label>
+                    <select id="newProdUnit">
+                        <option value="قطعة">قطعة</option>
+                        <option value="شكارة">شكارة</option>
+                        <option value="كيلو">كيلوجرام</option>
+                        <option value="كرتونة">كرتونة</option>
+                        <option value="متر">متر</option>
+                    </select>
+                </div>
+
+                <div class="form-control">
+                    <label>رابط صورة المنتج (URL)</label>
+                    <input type="url" id="newProdImgUrl" placeholder="https://example.com/img.png">
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-plus"></i> إضافة للمخزن
+                </button>
+            </form>
+        </section>
+
+        <section class="table-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="margin: 0; color: #0f172a; font-weight: 700;">قائمة المنتجات المسجلة والكميات الحالية</h3>
+            </div>
+
+            <div class="search-container">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="productSearchInput" placeholder="ابحث باسم المنتج أو الكود الخاص به..." oninput="renderProducts()">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>المعاينة</th>
+                        <th>المنتج</th>
+                        <th>الكود</th>
+                        <th>الوحدة القياسية</th>
+                        <th>العدد المتاح (الرصيد)</th>
+                    </tr>
+                </thead>
+                <tbody id="productsTableBody">
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+</div>
+
+<script>
+    function renderProducts() {
+        let stocks = JSON.parse(localStorage.getItem("stocks")) || [];
+        const tableBody = document.getElementById("productsTableBody");
+        const searchQuery = document.getElementById("productSearchInput") ? document.getElementById("productSearchInput").value.trim().toLowerCase() : "";
+        
+        if (!tableBody) return;
+        tableBody.innerHTML = "";
+        
+        const productMap = new Map();
+        const uniqueUnits = new Set();
+        let totalWarehouseStock = 0;
+
+        stocks.forEach(item => {
+            if (item.code) {
+                const codeKey = item.code.trim().toLowerCase();
+                const inQty = Number(item.inQty) || 0;
+                const outQty = Number(item.outQty) || 0;
+
+                if (productMap.has(codeKey)) {
+                    const existing = productMap.get(codeKey);
+                    existing.inQty += inQty;
+                    existing.outQty += outQty;
+                    // الاحتفاظ بالصورة إذا وجدت في أي حركة مخزنية
+                    if (item.imgUrl && !existing.imgUrl) {
+                        existing.imgUrl = item.imgUrl;
+                    }
+                } else {
+                    productMap.set(codeKey, {
+                        product: item.product,
+                        code: item.code.trim(),
+                        unit: item.unit ? item.unit.trim() : 'قطعة',
+                        inQty: inQty,
+                        outQty: outQty,
+                        imgUrl: item.imgUrl || ""
+                    });
+                }
+                if(item.unit) uniqueUnits.add(item.unit.trim());
+            }
+        });
+
+        document.getElementById("prodUniqueCount").textContent = productMap.size;
+        document.getElementById("prodUnitsCount").textContent = uniqueUnits.size;
+
+        let visibleIndex = 0;
+
+        productMap.forEach(item => {
+            const availableQty = item.inQty - item.outQty;
+            totalWarehouseStock += availableQty;
+
+            const matchesName = item.product && item.product.toLowerCase().includes(searchQuery);
+            const matchesCode = item.code && item.code.toLowerCase().includes(searchQuery);
+
+            if (searchQuery === "" || matchesName || matchesCode) {
+                const row = document.createElement("tr");
+                row.style.animation = `fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
+                row.style.animationDelay = `${visibleIndex * 0.04}s`;
+                visibleIndex++;
+
+                const badgeClass = availableQty > 0 ? "badge-available" : "badge-empty";
+                const iconClass = availableQty > 0 ? "fa-boxes-stacked" : "fa-triangle-exclamation";
+                
+                // استخدام صورة افتراضية في حال لم يرفع المستخدم صورة للمنتج
+                const currentImg = item.imgUrl ? item.imgUrl : "https://placehold.co/50x50/e2e8f0/475569?text=📦";
+
+                row.innerHTML = `
+                    <td><img src="${currentImg}" class="table-prod-img" onerror="this.src='https://placehold.co/50x50/e2e8f0/475569?text=📦'"></td>
+                    <td style="font-weight: 700; color: #1e293b;">${item.product}</td>
+                    <td><span class="code-box">${item.code}</span></td>
+                    <td><span class="badge-unit"><i class="fa-solid fa-scale-balanced"></i> ${item.unit}</span></td>
+                    <td><span class="${badgeClass}"><i class="fa-solid ${iconClass}"></i> ${availableQty} ${item.unit}</span></td>
+                `;
+                tableBody.appendChild(row);
+            }
+        });
+
+        document.getElementById("prodTotalStock").textContent = totalWarehouseStock;
+    }
+
+    document.getElementById("addProductForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        let stocks = JSON.parse(localStorage.getItem("stocks")) || [];
+        
+        const name = document.getElementById("newProdName").value.trim();
+        const code = document.getElementById("newProdCode").value.trim();
+        const unit = document.getElementById("newProdUnit").value;
+        const imgUrl = document.getElementById("newProdImgUrl").value.trim();
+
+        const isDuplicate = stocks.some(item => item.code.trim().toLowerCase() === code.toLowerCase());
+        
+        if (isDuplicate) {
+            alert("⚠️ عذراً، هذا الكود مسجل لمنتج آخر بالفعل في قواعد البيانات!");
+            return;
+        }
+
+        stocks.push({
+            product: name,
+            code: code,
+            unit: unit,
+            inQty: 0,
+            outQty: 0,
+            imgUrl: imgUrl,
+            date: new Date().toLocaleDateString('en-US') 
+        });
+
+        localStorage.setItem("stocks", JSON.stringify(stocks));
+        
+        document.getElementById("addProductForm").reset();
+        renderProducts();
+    });
+
+    renderProducts();
+    window.addEventListener('storage', renderProducts);
+</script>
+
+</body>
+</html>
